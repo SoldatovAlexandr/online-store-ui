@@ -1,13 +1,18 @@
-import React, {useState} from 'react';
+import React, {useContext, useState} from 'react';
 import {Button, Form, Modal} from "react-bootstrap";
 import {createType} from "../../../api/TypeApi";
+import {Context} from "../../../index";
 
 const CreateType = ({show, onHide}) => {
 
+    const {products} = useContext(Context)
     const [name, setName] = useState('');
 
     const addType = () => {
         createType(name).then(data => {
+            const types = products.types.slice()
+            types.push(data)
+            products.setTypes(types)
             setName('')
             onHide()
         })

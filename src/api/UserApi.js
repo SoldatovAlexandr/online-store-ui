@@ -13,11 +13,11 @@ export const login = async (login, password) => {
 }
 
 export const check = async () => {
-    const response = await $authHost('/auth')
-    const parsedToken = parseJwt(response.data.accessToken)
-    const user = getUser(parsedToken, response)
-    localStorage.setItem('user', JSON.stringify(user));
-    return user;
+    const user = localStorage.getItem('user')
+    if (user) {
+        return user
+    }
+    throw new Error();
 }
 
 const parseJwt = (token) => {
@@ -36,4 +36,24 @@ const getUser = (parsedToken, response) => {
         accessToken: response.data.accessToken,
         refreshToken: response.data.refreshToken
     }
+}
+
+export const fetchUsers = async (page, size = 5) => {
+    page = page - 1
+    const {data} = await $host.get('api/users/', {
+        params: {
+            page, size
+        }
+    })
+    return data
+}
+
+export const addAdmin = async (id) => {
+    const {data} = await $authHost.post('api/users/' + id + '/roles/')
+    return data
+}
+
+export const deleteAdmin = async (id) => {
+    const {data} = await $authHost.delete('api/users/' + id + '/roles/')
+    return data
 }

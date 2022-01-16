@@ -16,7 +16,7 @@ const $authHost = axios.create({
     }
 })
 
-const authInterceptor = config => {
+const authRequestInterceptor = config => {
     const user = JSON.parse(localStorage.getItem('user'));
     if (user && user.accessToken) {
         config.headers.authorization = `Bearer ${user.accessToken}`
@@ -24,7 +24,12 @@ const authInterceptor = config => {
     return config
 }
 
-$authHost.interceptors.request.use(authInterceptor)
+const authResponseInterceptor = config => {
+
+}
+
+$authHost.interceptors.request.use(authRequestInterceptor)
+//$authHost.interceptors.response.use(authResponseInterceptor)
 
 export {
     $host,

@@ -1,29 +1,39 @@
 import React, {useContext, useEffect, useState} from 'react';
-import {Button, Dropdown, Form, FormLabel, Modal} from "react-bootstrap";
+import {Button, Dropdown, Form, Modal} from "react-bootstrap";
 import {Context} from "../../../index";
 import DropdownMenu from "react-bootstrap/DropdownMenu";
 import {fetchTypes} from "../../../api/TypeApi";
 import {observer} from "mobx-react-lite";
-import {createProduct, uploadFile} from "../../../api/ProductApi";
+import {updateProduct, uploadFile} from "../../../api/ProductApi";
 
-const CreateProduct = observer(({show, onHide}) => {
+const UpdateProduct = observer(({show, onHide, product}) => {
 
         const {products} = useContext(Context)
 
+        const [id, setId] = useState(0)
         const [name, setName] = useState('')
         const [amount, setAmount] = useState(0)
         const [description, setDescription] = useState('')
-        const [ageLimit, setAgeLimit] = useState(18)
+        const [ageLimit, setAgeLimit] = useState(0)
         const [author, setAuthor] = useState('')
-        const [yearOfPublication, setYearOfPublication] = useState(2022)
-        const [fileId, setFileId] = useState('')
+        const [yearOfPublication, setYearOfPublication] = useState(0)
+        const [fileId, setFileId] = useState(null)
 
         useEffect(() => {
             fetchTypes().then(data => products.setTypes(data))
-        }, [])
+            setId(product.id)
+            setName(product.name)
+            setAuthor(product.author)
+            setAmount(product.amount)
+            setYearOfPublication(product.yearOfPublication)
+            setAgeLimit(product.ageLimit)
+            setDescription(product.description)
+            setFileId(product.image)
+        }, [product])
 
-        const addProduct = () => {
+        const changeProduct = () => {
             const product = {
+                id: id,
                 name: name,
                 amount: amount,
                 description: description,
@@ -34,11 +44,14 @@ const CreateProduct = observer(({show, onHide}) => {
                 image: fileId
             }
 
-            createProduct(product)
+            updateProduct(product)
                 .then(data => {
-                    const temp = products.products.slice()
-                    temp.push(data)
-                    products.setProducts(temp)
+                    const pr = products.products.slice().map((obj) => {
+                        if (obj.id === id) {
+                            return product
+                        } else return obj
+                    })
+                    products.setProducts(pr)
                     onHide()
                 })
                 .catch(error => {
@@ -104,7 +117,6 @@ const CreateProduct = observer(({show, onHide}) => {
                         <Form.Control
                             type="file"
                             onChange={selectFile}
-                            accept={"image/*"}
                         />
                         <div className="mt-3">Year of publishing</div>
                         <Form.Control
@@ -139,9 +151,9 @@ const CreateProduct = observer(({show, onHide}) => {
                     </Button>
                     <Button
                         variant={"outline-success"}
-                        onClick={addProduct}
+                        onClick={changeProduct}
                     >
-                        Add
+                        Update
                     </Button>
                 </Modal.Footer>
             </Modal>
@@ -149,4 +161,4 @@ const CreateProduct = observer(({show, onHide}) => {
     }
 )
 
-export default CreateProduct;
+export default UpdateProduct;

@@ -8,12 +8,14 @@ const Pages = observer(() => {
     const {products} = useContext(Context)
     const pages = []
 
-    for (let i = 0; i < products.totalPage; i++) {
-        pages.push(i + 1)
+    if (products.totalPage > 1) {
+        for (let i = 0; i < products.totalPage; i++) {
+            pages.push(i + 1)
+        }
     }
 
     return (
-        <Pagination className="mt-5">
+        <Pagination className="mt-3">
             {pages.map(page =>
                 <Pagination.Item
                     key={page}

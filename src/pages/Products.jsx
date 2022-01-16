@@ -14,18 +14,16 @@ const Products = observer(() => {
 
         useEffect(() => {
             fetchTypes().then(data => products.setTypes(data))
-            fetchProducts(null, products.page, products.limit).then(data => {
+            fetchProducts(null, products.page, products.limit, null, null).then(data => {
                 products.setProducts(data.content)
-                console.log(data)
                 products.setTotalCount(data.totalElements)
                 products.setTotalPage(data.totalPages)
             })
         }, [])
 
         useEffect(() => {
-            fetchProducts(products.selectedType.id, products.page, products.limit).then(data => {
+            fetchProducts(products.selectedType.id, products.page, products.limit, null, null).then(data => {
                 products.setProducts(data.content)
-                console.log(data)
                 products.setTotalCount(data.totalElements)
                 products.setTotalPage(data.totalPages)
             })
