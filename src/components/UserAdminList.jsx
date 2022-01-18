@@ -4,6 +4,7 @@ import {Context} from "../index";
 import {Button, Card} from "react-bootstrap";
 import ErrorModal from "./UI/Modals/ErrorModal";
 import {addAdmin, deleteAdmin, fetchUsers} from "../api/UserApi";
+import {isAdmin} from "../utils/utils";
 
 const UserAdminList = observer(() => {
 
@@ -27,15 +28,6 @@ const UserAdminList = observer(() => {
                 const index = user.roles.indexOf(data);
                 user.roles.splice(index, 1)
             }).catch(() => setErrorVisible(true))
-        }
-
-        function isAdmin(user) {
-            for (let i = 0; i < user.roles.length; i++) {
-                if (user.roles[i].name === 'ROLE_ADMIN') {
-                    return true;
-                }
-            }
-            return false;
         }
 
         return (

@@ -4,6 +4,8 @@ import {Context} from "../../../index";
 import {observer} from "mobx-react-lite";
 import {useHistory} from "react-router-dom"
 import {ADMIN_ROUTE, LOGIN_ROUTE} from "../../../utils/consts";
+import {logoutUser} from "../../../api/UserApi";
+import {isAdmin} from "../../../utils/utils";
 
 const NavBar = observer(() => {
 
@@ -11,9 +13,11 @@ const NavBar = observer(() => {
         const history = useHistory()
 
         const logout = () => {
-            user.setUser({})
-            user.setIsAuth(false)
-            localStorage.removeItem('user');
+            logoutUser().then(() => {
+                user.setUser({})
+                user.setIsAuth(false)
+                localStorage.removeItem('user');
+            })
         }
 
         return (
@@ -27,12 +31,14 @@ const NavBar = observer(() => {
                                 <Nav className="me-auto">
                                     <Nav.Link href="/products">Products</Nav.Link>
                                     <Nav.Link href="/baskets">Basket</Nav.Link>
-                                    <Button
+                                    {isAdmin(user.user) &&
+                                    < Button
                                         variant={"outline-light"}
                                         onClick={() => history.push(ADMIN_ROUTE)}
                                     >
                                         Admin
                                     </Button>
+                                    }
                                     <Button
                                         variant={"outline-light"}
                                         onClick={() => logout()}

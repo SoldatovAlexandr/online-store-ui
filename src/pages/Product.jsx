@@ -2,6 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {Button, Card, Col, Container, Image, Row} from "react-bootstrap";
 import {useParams} from "react-router-dom";
 import {fetchOneProduct} from "../api/ProductApi";
+import {BASE_URL} from "../utils/consts";
 
 const Product = () => {
     const [product, setProduct] = useState({})
@@ -9,7 +10,6 @@ const Product = () => {
 
     useEffect(() => {
         fetchOneProduct(id).then(data => setProduct(data))
-        console.log(product)
     }, [])
 
     return (
@@ -19,7 +19,7 @@ const Product = () => {
             <hr className="style1"/>
             <Row>
                 <Col md={4}>
-                    <Image width={300} height={300} src={"http://localhost:8080/api/upload/" + product.image}/>
+                    <Image width={300} height={300} src={BASE_URL + "/api/upload/" + product.image}/>
                 </Col>
                 <Col md={4}>
                     <div>

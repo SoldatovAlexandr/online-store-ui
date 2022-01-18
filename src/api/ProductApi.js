@@ -1,17 +1,17 @@
-import {$authHost, $host} from "./ApiService";
+import { $host} from "./ApiService";
 
 export const createProduct = async (product) => {
-    const {data} = await $authHost.post('api/products/', product)
+    const {data} = await $host.post('api/products/', product)
     return data
 }
 
 export const updateProduct = async (product) => {
-    const {data} = await $authHost.put('api/products/' + product.id, product)
+    const {data} = await $host.put('api/products/' + product.id, product)
     return data
 }
 
 export const uploadFile = async (formData) => {
-    const {data} = await $authHost.post("api/upload/", formData, {
+    const {data} = await $host.post("api/upload/", formData, {
         headers: {
             "Content-Type": "multipart/form-data",
         }
@@ -35,6 +35,6 @@ export const fetchOneProduct = async (id) => {
 }
 
 export const removeProduct = async (id) => {
-    const {data} = await $authHost.delete('api/products/' + id)
+    const {data} = await $host.delete('api/products/' + id)
     return data
 }

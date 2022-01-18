@@ -16,7 +16,6 @@ const Registration = () => {
                 //Todo вы успешно зарегестрировались
                 history.push(LOGIN_ROUTE)
             }
-            console.log(data)
         }).catch(error => {
             alert(error)
         })

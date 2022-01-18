@@ -1,12 +1,12 @@
-import {$authHost, $host} from "./ApiService";
+import {$host} from "./ApiService";
 
 export const createType = async (name) => {
-    const {data} = await $authHost.post('api/genres/', {name})
+    const {data} = await $host.post('api/genres/', {name})
     return data
 }
 
 export const updateType = async (id, name) => {
-    const {data} = await $authHost.put('api/genres/' + id, {name})
+    const {data} = await $host.put('api/genres/' + id, {name})
     return data
 }
 
@@ -16,6 +16,6 @@ export const fetchTypes = async () => {
 }
 
 export const removeType = async (id) => {
-    const {data} = await $authHost.delete('api/genres/' + id)
+    const {data} = await $host.delete('api/genres/' + id)
     return data
 }

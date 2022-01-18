@@ -4,7 +4,7 @@ import AppRouter from "./components/AppRouter";
 import NavBar from "./components/UI/Navbar/Navbar";
 import {Context} from "./index";
 import {observer} from "mobx-react-lite";
-import {check} from "./api/UserApi";
+import {getUser} from "./api/UserApi";
 import {Spinner} from "react-bootstrap";
 
 const App = observer(() => {
@@ -13,9 +13,11 @@ const App = observer(() => {
         const [loading, setLoading] = useState(true)
 
         useEffect(() => {
-            check().then(() => {
+         //   user.setIsAuth(false)
+            getUser().then((data) => {
+                user.setUser(data)
                 user.setIsAuth(true)
-            }).catch(()=>{
+            }).catch(() => {
                 user.setIsAuth(false)
             }).finally(() => setLoading(false))
         }, [])

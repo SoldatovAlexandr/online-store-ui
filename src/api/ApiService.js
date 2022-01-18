@@ -1,37 +1,14 @@
 import axios from "axios";
-
-const baseUrl = 'http://localhost:8080/';
+import {BASE_URL} from "../utils/consts";
 
 const $host = axios.create({
-    baseURL: baseUrl,
+    baseURL: BASE_URL,
     headers: {
         'Content-type': 'application/json',
-    }
+    },
+    withCredentials: true
 })
-
-const $authHost = axios.create({
-    baseURL: baseUrl,
-    headers: {
-        'Content-type': 'application/json',
-    }
-})
-
-const authRequestInterceptor = config => {
-    const user = JSON.parse(localStorage.getItem('user'));
-    if (user && user.accessToken) {
-        config.headers.authorization = `Bearer ${user.accessToken}`
-    }
-    return config
-}
-
-const authResponseInterceptor = config => {
-
-}
-
-$authHost.interceptors.request.use(authRequestInterceptor)
-//$authHost.interceptors.response.use(authResponseInterceptor)
 
 export {
-    $host,
-    $authHost
+    $host
 }

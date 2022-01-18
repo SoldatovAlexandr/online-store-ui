@@ -1,16 +1,16 @@
-import {$authHost} from "./ApiService";
+import {$host} from "./ApiService";
 
 export default class BasketApi {
 
     static async getById(id) {
-        return $authHost.get('baskets/'+ id)
+        return $host.get('baskets/'+ id)
     }
 
     static async addProduct(id, productId) {
-        return $authHost.put('baskets/' + id + '/add/' + productId)
+        return $host.put('baskets/' + id + '/add/' + productId)
     }
 
     static async deleteProduct(id, productId) {
-        return $authHost.put('baskets/' + id + '/delete/' + productId)
+        return $host.put('baskets/' + id + '/delete/' + productId)
     }
 }
