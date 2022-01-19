@@ -18,14 +18,6 @@ export const authRoutes = [
     {
         path: BASKET_ROUTE,
         Component: Basket
-    },
-    {
-        path: PRODUCTS_ROUTE,
-        Component: Products
-    },
-    {
-        path: PRODUCTS_ROUTE + '/:id',
-        Component: Product
     }
 ]
 
@@ -46,7 +38,15 @@ export const publicRoutes = [
         Component: About
     },
     {
-        path: AUTH_ROUTE,
+        path: AUTH_ROUTE + '/:id',
         Component: Auth
+    },
+    {
+        path: PRODUCTS_ROUTE,
+        Component: Products
+    },
+    {
+        path: PRODUCTS_ROUTE + '/:id',
+        Component: Product
     }
 ]

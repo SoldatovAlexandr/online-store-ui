@@ -1,4 +1,4 @@
-import React, {useContext, useState} from 'react';
+import React, {useContext} from 'react';
 import {Button, Container, Nav, Navbar} from "react-bootstrap";
 import {Context} from "../../../index";
 import {observer} from "mobx-react-lite";
@@ -16,7 +16,6 @@ const NavBar = observer(() => {
             logoutUser().then(() => {
                 user.setUser({})
                 user.setIsAuth(false)
-                localStorage.removeItem('user');
             })
         }
 
@@ -48,6 +47,7 @@ const NavBar = observer(() => {
                                 </Nav>
                                 :
                                 <Nav className="me-auto">
+                                    <Nav.Link href="/products">Products</Nav.Link>
                                     <Button
                                         variant={"outline-light"}
                                         onClick={() => history.push(LOGIN_ROUTE)}

@@ -1,10 +1,9 @@
-import React, {createContext, useContext, useEffect, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import {BrowserRouter} from "react-router-dom";
 import AppRouter from "./components/AppRouter";
 import NavBar from "./components/UI/Navbar/Navbar";
 import {Context} from "./index";
 import {observer} from "mobx-react-lite";
-import {getUser} from "./api/UserApi";
 import {Spinner} from "react-bootstrap";
 
 const App = observer(() => {
@@ -13,13 +12,15 @@ const App = observer(() => {
         const [loading, setLoading] = useState(true)
 
         useEffect(() => {
-         //   user.setIsAuth(false)
-            getUser().then((data) => {
+            const data = JSON.parse(localStorage.getItem('user'));
+            if (data) {
                 user.setUser(data)
                 user.setIsAuth(true)
-            }).catch(() => {
+            } else {
+                user.setUser(null)
                 user.setIsAuth(false)
-            }).finally(() => setLoading(false))
+            }
+            setLoading(false)
         }, [])
 
         if (loading) {

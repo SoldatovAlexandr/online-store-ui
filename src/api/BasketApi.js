@@ -1,16 +1,40 @@
-import {$host} from "./ApiService";
+import {$authHost, $host} from "./ApiService";
 
-export default class BasketApi {
 
-    static async getById(id) {
-        return $host.get('baskets/'+ id)
-    }
+export const fetchBasket = async (id) => {
+    const {data} = await $authHost.get('api/baskets/' + id)
+    console.log("RESPONSE" + data)
+    return data
+}
 
-    static async addProduct(id, productId) {
-        return $host.put('baskets/' + id + '/add/' + productId)
-    }
+export const addProductToBasket = async (userId, productId) => {
+    const {data} = await $authHost.put('api/baskets/' + userId, {
+        items: [
+            {id: productId, count: 1}
+        ]
+    })
+    return data
+}
 
-    static async deleteProduct(id, productId) {
-        return $host.put('baskets/' + id + '/delete/' + productId)
-    }
+export const updateProductToBasket = async (userId, productId, count) => {
+    const {data} = await $authHost.put('api/baskets/' + userId, {
+        items: [
+            {id: productId, count: count}
+        ]
+    })
+    return data
+}
+
+export const deleteProductToBasket = async (userId, productId) => {
+    const {data} = await $authHost.put('api/baskets/' + userId, {
+        items: [
+            {id: productId, count: 0}
+        ]
+    })
+    return data
+}
+
+export const clearBasket = async (userId) => {
+    const {data} = await $authHost.delete('api/baskets/' + userId)
+    return data
 }

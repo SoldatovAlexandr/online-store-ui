@@ -1,62 +1,130 @@
-import React, {useEffect, useState} from 'react';
-import {useFetching} from "../hooks/useFetching";
-import BasketApi from "../api/BasketApi";
-import BasketList from "../components/BasketList";
+import React, {useContext, useEffect, useState} from 'react';
+import {Context} from "../index";
 
-const Basket = () => {
+import {deleteProductToBasket, fetchBasket, updateProductToBasket} from "../api/BasketApi";
+import {Button, Card, Col, Container, Form, Image, Row} from "react-bootstrap";
+import {observer} from "mobx-react-lite";
+import {BASE_URL, PRODUCTS_ROUTE} from "../utils/consts";
+import {useHistory} from "react-router-dom";
+import PayModal from "../components/UI/Modals/PayModal";
 
-    /* const [user, setUser] = useState(AuthService.getCurrentUser())
-     const [totalAmount, setTotalAmount] = useState()
-     const [products, setProducts] = useState([])
-     const [fetchBasket, isBasketLoading, basketError] = useFetching(async () => {
-         const response = await BasketApi.getById(user.id);
-         setTotalAmount(response.data.totalAmount)
-         setProducts(response.data.products)
-     })
+const Basket = observer(() => {
 
-     useEffect(() => {
-         fetchBasket()
-     }, [])
+    const {user} = useContext(Context)
+    const {basket} = useContext(Context)
+    const history = useHistory()
+    const [payModalVisible, setPayModalVisible] = useState(false)
 
-     const removeProduct = async (product) => {
-         const response = await BasketApi.deleteProduct(user.id, product.id)
-         setTotalAmount(response.data.totalAmount)
-         setProducts(response.data.products)
-     }
 
-     const addProduct = async (product) => {
-         const response = await BasketApi.addProduct(user.id, product.id)
-         setTotalAmount(response.data.totalAmount)
-         setProducts(response.data.products)
-     }
+    useEffect(() => {
+        const userId = user.user.id;
+        fetchBasket(userId).then((data) => {
+            basket.setItems(data.items)
+            basket.setTotalAmount(data.totalAmount)
+        }).catch((error) => {
+            console.log(error)
+        })
+    }, [])
 
-     const pay = async () => {
-         console.log("Процесс оплаты")
-     }*/
+    const changeCount = (item, count) => {
+        updateProductToBasket(user.user.id, item.id, count).then((data) => {
+            basket.setItems(data.items)
+            basket.setTotalAmount(data.totalAmount)
+        }).catch((error) => {
+            console.log(error)
+        })
+    }
+
+    const remove = (item) => {
+        deleteProductToBasket(user.user.id, item.id).then((data) => {
+            basket.setItems(data.items)
+            basket.setTotalAmount(data.totalAmount)
+        }).catch((error) => {
+            console.log(error)
+        })
+    }
 
     return (
-        <div>
-            Корзина
-        </div>
-        /*<div>
-            <h1 style={{textAlign: 'center'}}>
-                Basket
-            </h1>
+        <Container className={"mt-3"}>
+            <h2>Корзина</h2>
 
-            <div>
-                Ваш список покупок:
-            </div>
-            <BasketList products={products} add={addProduct} remove={removeProduct}/>
-            <div>
-                Total amount: {totalAmount}
-            </div>
-            <div>
-                <button onClick={pay}>
-                    Перейти к оплате
-                </button>
-            </div>
-        </div>*/
+            {
+                basket.items.length === 0 ?
+                    <div className={"m-auto"}>
+                        Тут еще пусто:( Попробуйте что-нибудь <a href={PRODUCTS_ROUTE}> выбрать...</a>
+                    </div>
+                    :
+                    <Row>
+                        <Col md={8}>
+                            {
+                                basket.items.map(item =>
+                                    <Col className={"mt-3"}>
+                                        <Card style={{cursor: 'pointer'}} border={"light"}>
+                                            <Row>
+                                                <Col md={4}>
+                                                    <Image width={150} height={150}
+                                                           src={BASE_URL + "/api/upload/" + item.image}
+                                                           onClick={() => history.push(PRODUCTS_ROUTE + '/' + item.id)}/>
+                                                </Col>
+                                                <Col md={8}>
+                                                    <Row>
+                                                        <Col md={6} className={"pl-3"}>
+                                                            <div>
+                                                                <div
+                                                                    className="mt-1 d-flex justify-content-between align-items-center">
+                                                                    <div>{item.name}</div>
+                                                                </div>
+                                                                <div className={"text-black-50"}>{item.author}</div>
+                                                            </div>
+                                                        </Col>
+                                                        <Col md={6}>
+                                                            <div
+                                                                className="mt-1 d-flex justify-content-between align-items-center">
+                                                                <div style={{fontSize: 20}}>{item.amount} руб.</div>
+                                                            </div>
+                                                        </Col>
+                                                    </Row>
+                                                    <Row className={"pt-3"}>
+                                                        <div style={{width: 100}}>
+                                                            <Form.Control
+                                                                value={item.count}
+                                                                onChange={e => changeCount(item, Number(e.target.value))}
+                                                                type="number"
+                                                            />
+                                                        </div>
+                                                        <div className={"pl-2"}>
+                                                            <Button variant={"outline-danger"}
+                                                                    onClick={() => remove(item)}>delete
+                                                            </Button>
+                                                        </div>
+                                                    </Row>
+                                                </Col>
+                                            </Row>
+                                        </Card>
+                                    </Col>
+                                )
+                            }
+                        </Col>
+                        <Col md={4}>
+                            <div className={"d-flex justify-content-center align-items-center"}>
+                                <Card style={{width: 600}} className="p-5">
+                                    <div className={"m-auto pt-3"} style={{fontSize: 17}}>
+                                        Общая стоимость: {basket.totalAmount} руб.
+                                    </div>
+                                    <div className={"m-auto pt-3"}>
+                                        <Button variant={"outline-success"}
+                                                onClick={() => setPayModalVisible(true)}>
+                                            Pay
+                                        </Button>
+                                    </div>
+                                </Card>
+                            </div>
+                        </Col>
+                    </Row>
+            }
+            <PayModal show={payModalVisible} onHide={() => setPayModalVisible(false)}/>
+        </Container>
     );
-};
+});
 
 export default Basket;

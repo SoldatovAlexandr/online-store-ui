@@ -1,16 +1,32 @@
-import React, {useEffect, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import {Button, Card, Col, Container, Image, Row} from "react-bootstrap";
-import {useParams} from "react-router-dom";
+import {Redirect, useHistory, useParams} from "react-router-dom";
 import {fetchOneProduct} from "../api/ProductApi";
-import {BASE_URL} from "../utils/consts";
+import {BASE_URL, BASKET_ROUTE, LOGIN_ROUTE} from "../utils/consts";
+import {Context} from "../index";
+import {addProductToBasket} from "../api/BasketApi";
 
 const Product = () => {
     const [product, setProduct] = useState({})
+    const {user} = useContext(Context)
     const {id} = useParams()
+    const history = useHistory()
 
     useEffect(() => {
         fetchOneProduct(id).then(data => setProduct(data))
     }, [])
+
+    const addToBasket = () => {
+        if (user.isAuth) {
+            addProductToBasket(user.user.id, id).then((data) => {
+                history.push(BASKET_ROUTE)
+            }).catch((error) => {
+                console.log(error)
+            })
+        } else {
+            history.push(LOGIN_ROUTE)
+        }
+    }
 
     return (
         <Container className={"mt-3"}>
@@ -49,7 +65,7 @@ const Product = () => {
                         <h3>
                             {product.amount} руб.
                         </h3>
-                        <Button variant={"outline-dark"}>Add to basket</Button>
+                        <Button variant={"outline-dark"} onClick={() => addToBasket()}>Add to basket</Button>
                     </Card>
                 </Col>
             </Row>

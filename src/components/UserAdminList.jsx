@@ -1,10 +1,10 @@
 import {observer} from "mobx-react-lite";
 import React, {useContext, useEffect, useState} from "react";
 import {Context} from "../index";
-import {Button, Card} from "react-bootstrap";
+import {Button, Card, Row} from "react-bootstrap";
 import ErrorModal from "./UI/Modals/ErrorModal";
 import {addAdmin, deleteAdmin, fetchUsers} from "../api/UserApi";
-import {isAdmin} from "../utils/utils";
+import {isAdminFromPanel} from "../utils/utils";
 
 const UserAdminList = observer(() => {
 
@@ -40,15 +40,18 @@ const UserAdminList = observer(() => {
                     {users.users.map(user =>
                         <div className="m-1 d-flex justify-content-between align-items-center">
                             <div className="ml-3">
+                                {user.authType}
+                            </div>
+                            <div>
                                 {user.login}
                             </div>
-                            <div className="ml-3">
+                            <div>
                                 {user.roles.map(role =>
                                     <div>{role.name}</div>
                                 )}
                             </div>
                             {
-                                isAdmin(user) ?
+                                isAdminFromPanel(user) ?
                                     <Button variant="outline-danger" onClick={() => deleteAdminRole(user)}>
                                         Delete admin role
                                     </Button>

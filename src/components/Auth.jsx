@@ -1,31 +1,34 @@
 import {observer} from "mobx-react-lite";
 import React, {useContext, useState} from "react";
-import {getUser} from "../api/UserApi";
+import {getToken} from "../api/UserApi";
 import {Context} from "../index";
-import {Redirect} from "react-router-dom";
+import {useHistory, useParams} from "react-router-dom";
+import {ABOUT_ROUTE, LOGIN_ROUTE} from "../utils/consts";
 
 const Auth = observer(() => {
 
         const {user} = useContext(Context)
         const [isAuth, setIsAuth] = useState(false)
+        const {id} = useParams()
+        const history = useHistory()
 
         try {
-            getUser().then((data) => {
+            getToken(id).then((data) => {
                 user.setUser(data)
                 user.setIsAuth(true)
-               setIsAuth(true)
+                setIsAuth(true)
             })
         } catch (error) {
-            return <Redirect to='/login'/>;
+            history.push(LOGIN_ROUTE)
         }
 
-        if(isAuth){
-            return <Redirect to='/about'/>
+        if (isAuth) {
+            history.push(ABOUT_ROUTE)
         }
 
         return (
             <div>
-                Вы очень успешно авторизованы!
+                Подождите происходит авторизация...
             </div>
         );
 
