@@ -29,7 +29,7 @@ const NavBar = observer(() => {
                             user.isAuth ?
                                 <Nav className="me-auto">
                                     <Nav.Link href="/products">Products</Nav.Link>
-                                    <Nav.Link href="/baskets">Basket</Nav.Link>
+                                    <Nav.Link href="/carts">Cart</Nav.Link>
                                     {isAdmin(user.user) &&
                                     < Button
                                         variant={"outline-light"}

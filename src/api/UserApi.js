@@ -34,7 +34,7 @@ export const logoutUser = async () => {
     localStorage.removeItem('user');
 }
 
-export const fetchUsers = async (page, size = 5) => {
+export const fetchUsers = async (page, size = 100) => {
     page = page - 1
     const {data} = await $authHost.get('api/users/', {
         params: {
